@@ -1,0 +1,7 @@
+[core]
+	excludesfile = /Users/yoshitogoto/.gitignore_global
+[user]
+	name = yossyi0323
+	email = yoshito.goto.gt@gmail.com
+[init]
+	defaultBranch = main
