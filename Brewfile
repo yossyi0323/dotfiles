@@ -1,0 +1,7 @@
+brew "gh"
+cask "adobe-creative-cloud"
+cask "claude"
+cask "google-chrome"
+cask "obsidian"
+cask "raycast"
+cask "visual-studio-code"
