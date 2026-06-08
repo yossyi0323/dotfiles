@@ -1,0 +1,9 @@
+[tools]
+node = "lts"
+pnpm = "10" # version 11系が安定するまでは10系にしておく
+go = "latest"
+
+[settings]
+experimental = true
+
+
