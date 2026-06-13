@@ -53,6 +53,8 @@ return {
     -- Tab移動
     { key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(1) },
     { key = "Tab", mods = "SHIFT|CTRL", action = act.ActivateTabRelative(-1) },
+    { key = "{", mods = "SUPER", action = act.ActivateTabRelative(-1) },
+    { key = "}", mods = "SUPER", action = act.ActivateTabRelative(1) },
     -- Tab入れ替え
     { key = "{", mods = "LEADER", action = act({ MoveTabRelative = -1 }) },
     -- Tab新規作成
