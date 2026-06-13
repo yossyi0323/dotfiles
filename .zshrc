@@ -1,5 +1,6 @@
 export PATH="$HOME/.local/bin:$PATH"
 alias c='pbcopy'
+alias v='pbpaste'
 export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
 export GHQ_ROOT="$HOME/src"
 
