@@ -5,8 +5,8 @@ config.automatically_reload_config = true
 config.font_size = 12.0
 config.use_ime = true
 config.window_background_opacity = 0.6
-config.font = wezterm.font('UDEV Gothic NF')
 config.macos_window_background_blur = 20
+config.font = wezterm.font_with_fallback({ 'Menlo', 'Monaco', 'Courier New' })
 
 ----------------------------------------------------
 -- Tab

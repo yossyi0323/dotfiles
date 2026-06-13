@@ -34,6 +34,9 @@ brew "zsh-syntax-highlighting"
 cask "adobe-creative-cloud"
 # Anthropic's official Claude AI desktop app
 cask "claude"
+cask "font-hackgen"
+cask "font-hackgen-nerd"
+cask "font-udev-gothic-nf"
 # Web browser
 cask "google-chrome"
 # Knowledge base that works on top of a local folder of plain text Markdown files
@@ -42,8 +45,6 @@ cask "obsidian"
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm@nightly"
-# UDEV Gothic Nerd Font
-cask "font-udev-gothic-nf"
 vscode "anthropic.claude-code"
 vscode "mhutchie.git-graph"
 go "cmd/go"
