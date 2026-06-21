@@ -84,5 +84,10 @@
             key: ctrl-k
             internal: line_up
         }
+        {
+            key: ctrl-l
+            internal: "open_stay"
+            apply_to: directory
+        }
     ]
 }
