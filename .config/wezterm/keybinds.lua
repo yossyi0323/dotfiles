@@ -74,6 +74,32 @@ return {
     -- 貼り付け
     { key = "v", mods = "SUPER", action = act.PasteFrom("Clipboard") },
 
+    -- broot を左ペインで開く / 閉じる leader + e
+    {
+      key = "e",
+      mods = "LEADER",
+      action = wezterm.action_callback(function(window, pane)
+        local tab = window:active_tab()
+        for _, p in ipairs(tab:panes()) do
+          local proc = p:get_foreground_process_name()
+          if proc and proc:find("broot") then
+            p:activate()
+            window:perform_action(act.CloseCurrentPane({ confirm = false }), p)
+            return
+          end
+        end
+        local cwd = pane:get_current_working_dir()
+        local cwd_path = cwd and cwd.file_path or wezterm.home_dir
+        window:perform_action(
+          act.SplitPane({
+            direction = "Left",
+            size = { Percent = 25 },
+            command = { args = { "broot", "--max-depth", "1", cwd_path } },
+          }),
+          pane
+        )
+      end),
+    },
     -- Pane作成 leader + r or d
     { key = "d", mods = "LEADER", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
     { key = "r", mods = "LEADER", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
@@ -110,6 +136,8 @@ return {
     { key = "p", mods = "SHIFT|CTRL", action = act.ActivateCommandPalette },
     -- 設定再読み込み
     { key = "r", mods = "SHIFT|CTRL", action = act.ReloadConfiguration },
+    -- タブ検索
+    { key = "f", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "TABS", title = "Select tab" }) },
     -- キーテーブル用
     { key = "s", mods = "LEADER", action = act.ActivateKeyTable({ name = "resize_pane", one_shot = false }) },
     {
