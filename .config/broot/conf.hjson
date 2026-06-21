@@ -1,0 +1,88 @@
+{
+    default_flags: "h"
+    icon_theme: "nerdfont"
+
+    skin: {
+        default: "gray(20) none"
+        tree: "gray(6) none"
+        file: "gray(20) none"
+        directory: "gray(23) none Bold"
+        exe: "gray(20) none"
+        link: "gray(16) none Italic"
+        pruning: "gray(10) none Italic"
+        perm__: "gray(5) none"
+        perm_r: "gray(15) none"
+        perm_w: "gray(15) none"
+        perm_x: "gray(15) none"
+        owner: "gray(12) none"
+        group: "gray(12) none"
+        count: "gray(15) none"
+        dates: "gray(12) none"
+        sparse: "gray(10) none"
+        content_extract: "gray(18) none Italic"
+        content_match: "gray(23) none Bold"
+        git_branch: "gray(15) none"
+        git_insertions: "gray(15) none"
+        git_deletions: "gray(10) none"
+        git_status_current: "gray(20) none"
+        git_status_modified: "gray(18) none"
+        git_status_new: "gray(18) none Bold"
+        git_status_ignored: "gray(8) none"
+        git_status_conflicted: "gray(18) none"
+        git_status_other: "gray(12) none"
+        selected_line: "none gray(4)"
+        char_match: "gray(23) none Bold"
+        file_error: "gray(18) none"
+        flag_label: "gray(14) none"
+        flag_value: "gray(20) none Bold"
+        input: "gray(22) none"
+        status_error: "gray(22) gray(2)"
+        status_job: "gray(20) gray(4)"
+        status_normal: "gray(18) gray(2)"
+        status_italic: "gray(18) gray(2) Italic"
+        status_bold: "gray(20) gray(2) Bold"
+        status_code: "gray(18) gray(2)"
+        status_ellipsis: "gray(15) gray(2)"
+        purpose_normal: "gray(20) gray(2)"
+        purpose_italic: "gray(20) gray(2) Italic"
+        purpose_bold: "gray(20) gray(2) Bold"
+        purpose_ellipsis: "gray(18) gray(2)"
+        scrollbar_track: "gray(4) none"
+        scrollbar_thumb: "gray(14) none"
+        help_paragraph: "gray(20) none"
+        help_bold: "gray(23) none Bold"
+        help_italic: "gray(18) none Italic"
+        help_code: "gray(21) gray(3)"
+        help_headers: "gray(23) none Bold"
+        help_table_border: "gray(8) none"
+        preview_title: "gray(23) none"
+        preview: "gray(20) none"
+        preview_line_number: "gray(8) none"
+        preview_match: "gray(23) none Bold"
+        staging_area_title: "gray(23) none Bold"
+        mode_command_mark: "gray(20) gray(4) Bold"
+    }
+
+    verbs: [
+        {
+            key: enter
+            execution: "vim {file}"
+            apply_to: file
+            leave_broot: true
+        }
+        {
+            key: ctrl-e
+            execution: "code {file}"
+            apply_to: file
+            leave_broot: false
+        }
+        {
+            key: ctrl-j
+            internal: line_down
+        }
+        {
+            key: ctrl-k
+            internal: line_up
+        }
+    ]
+}

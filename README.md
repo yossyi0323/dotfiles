@@ -28,6 +28,7 @@ ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 ln -sf ~/dotfiles/.gitignore_global ~/.gitignore_global
 ln -sf ~/dotfiles/.config/wezterm ~/.config/wezterm
 ln -sf ~/dotfiles/.config/mise ~/.config/mise
+ln -sf ~/dotfiles/.config/broot/conf.hjson ~/.config/broot/conf.hjson
 ```
 
 ## Brewfile の更新
