@@ -1,6 +1,6 @@
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-# Fuzzy finder of files, dirs, MRUs, file contents, grep results
+# New way to see and navigate directory trees
 brew "broot"
 # Modern, maintained replacement for ls
 brew "eza"
@@ -14,8 +14,12 @@ brew "gh"
 brew "ghq"
 # Quickly rewrite git repository history
 brew "git-filter-repo"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Rust toolchain installer
@@ -36,13 +40,17 @@ brew "zsh-syntax-highlighting"
 cask "adobe-creative-cloud"
 # Anthropic's official Claude AI desktop app
 cask "claude"
+cask "font-fira-code"
 cask "font-hackgen"
 cask "font-hackgen-nerd"
+cask "font-jetbrains-mono"
 cask "font-udev-gothic-nf"
 # Web browser
 cask "google-chrome"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Team communication and collaboration software
+cask "slack"
 # Open-source code editor
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer

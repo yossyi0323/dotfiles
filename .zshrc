@@ -12,7 +12,17 @@ eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
 
-source /Users/yoshitogoto/.config/broot/launcher/bash/br
+function ghq-fzf() {
+  local selected_dir=$(ghq list -p | fzf --query "$LBUFFER")
+  if [ -n "$selected_dir" ]; then
+    BUFFER="cd ${selected_dir}"
+    zle accept-line
+  fi
+  zle clear-screen
+}
+zle -N ghq-fzf
+bindkey '^o' ghq-fzf
+
 function br() {
     local cmd cmd_file code
     cmd_file=$(mktemp)

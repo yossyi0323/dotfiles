@@ -136,8 +136,6 @@ return {
     { key = "p", mods = "SHIFT|CTRL", action = act.ActivateCommandPalette },
     -- 設定再読み込み
     { key = "r", mods = "SHIFT|CTRL", action = act.ReloadConfiguration },
-    -- ctrl-h で broot の親ディレクトリへ移動（:parent を入力して実行）
-    { key = "h", mods = "CTRL", action = act.SendString(":parent\r") },
     -- タブ検索
     { key = "f", mods = "LEADER", action = act.ShowLauncherArgs({ flags = "TABS", title = "Select tab" }) },
     -- キーテーブル用
