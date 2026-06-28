@@ -14,22 +14,13 @@
 git clone https://github.com/yossyi0323/dotfiles.git ~/dotfiles
 ```
 
-### 3. パッケージをインストール
+### 3. セットアップを実行
 
 ```sh
-brew bundle --file=~/dotfiles/Brewfile
+~/dotfiles/install.sh
 ```
 
-### 4. シンボリックリンクを貼る
-
-```sh
-ln -sf ~/dotfiles/.zshrc ~/.zshrc
-ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
-ln -sf ~/dotfiles/.gitignore_global ~/.gitignore_global
-ln -sf ~/dotfiles/.config/wezterm ~/.config/wezterm
-ln -sf ~/dotfiles/.config/mise ~/.config/mise
-ln -sf ~/dotfiles/.config/broot/conf.hjson ~/.config/broot/conf.hjson
-```
+パッケージのインストールとシンボリックリンクの作成を自動で行う。
 
 ## Brewfile の更新
 
@@ -38,3 +29,11 @@ ln -sf ~/dotfiles/.config/broot/conf.hjson ~/.config/broot/conf.hjson
 ```sh
 brew bundle dump --force --file=~/dotfiles/Brewfile
 ```
+
+## 手動インストールが必要なアプリ
+
+Homebrew では管理できないため、手動でインストールすること。
+
+| アプリ | 入手先 |
+| --- | --- |
+| Kindle | Mac App Store |
