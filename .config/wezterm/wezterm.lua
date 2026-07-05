@@ -6,7 +6,7 @@ config.automatically_reload_config = true
 config.set_environment_variables = {
   PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
 }
-config.font_size = 12.0
+config.font_size = 14.0
 config.use_ime = true
 config.enable_kitty_keyboard = true
 config.window_background_opacity = 0.6
