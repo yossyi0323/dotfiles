@@ -9,7 +9,6 @@ brew bundle --file="$DOTFILES_DIR/Brewfile"
 
 echo "==> Creating symlinks..."
 mkdir -p ~/.config/broot
-mkdir -p ~/Library/KeyBindings
 
 ln -sf "$DOTFILES_DIR/.zshrc"                        ~/.zshrc
 ln -sf "$DOTFILES_DIR/.gitconfig"                    ~/.gitconfig
@@ -18,6 +17,5 @@ ln -sf "$DOTFILES_DIR/.config/wezterm"               ~/.config/wezterm
 ln -sf "$DOTFILES_DIR/.config/mise"                  ~/.config/mise
 ln -sf "$DOTFILES_DIR/.config/broot/conf.hjson"      ~/.config/broot/conf.hjson
 ln -sf "$DOTFILES_DIR/.config/starship.toml"         ~/.config/starship.toml
-ln -sf "$DOTFILES_DIR/Library/KeyBindings/DefaultKeyBinding.dict" ~/Library/KeyBindings/DefaultKeyBinding.dict
 
 echo "Done! Restart your shell to apply changes."
