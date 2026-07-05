@@ -14,6 +14,8 @@ brew "gh"
 brew "ghq"
 # Quickly rewrite git repository history
 brew "git-filter-repo"
+# Task is a task runner/build tool that aims to be simpler and easier to use
+brew "go-task"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Polyglot runtime manager (asdf rust clone)
@@ -47,6 +49,8 @@ cask "font-jetbrains-mono"
 cask "font-udev-gothic-nf"
 # Web browser
 cask "google-chrome"
+# Keyboard customiser
+cask "karabiner-elements"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Team communication and collaboration software
