@@ -18,6 +18,8 @@ brew "git-filter-repo"
 brew "go-task"
 # Agent multiplexer that lives in your terminal
 brew "herdr"
+# Review-first terminal diff viewer for agent-authored changesets
+brew "hunk"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Polyglot runtime manager (asdf rust clone)
