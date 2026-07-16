@@ -46,9 +46,26 @@ function g() {
   case "$1" in
     new)  shift; _g_new "$@" ;;
     save) shift; _g_save "$@" ;;
+    help) if [ $# -eq 1 ]; then _g_help; else git "$@"; fi ;;
     "")   git status -sb ;;
     *)    git "$@" ;;
   esac
+}
+
+function _g_help() {
+  cat <<'EOF'
+g — 個人gitコマンド集 (dotfiles/.zshrc で定義)
+
+  g new <name> [--private]   新規リポジトリをghq配下に作成 → GitHub作成 → push → その場にcd
+  g new [--private]          カレントディレクトリをghq配下に移動 → commit → GitHub作成 → push
+                             (moon new などツールがディレクトリを作った直後に使う)
+  g save [メッセージ]         git add -A → commit → push を一撃 (メッセージ省略時は "wip")
+  g help                     このヘルプを表示 (g help commit などは git help に流れる)
+  g                          git status -sb
+  g <その他>                 そのまま git に流す (g log, g diff, g push など)
+
+  git自体のヘルプ: g --help (コマンド一覧) / g help <コマンド> (マニュアル)
+EOF
 }
 
 function _g_save() {
