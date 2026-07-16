@@ -37,10 +37,30 @@ function br() {
     fi
 }
 
-# 新規リポジトリ作成〜GitHub作成〜pushまで一撃
-# usage: newrepo <name> [--private]   … ghq配下に新規作成してpush
-#        newrepo [--private]          … カレントディレクトリ(moon new直後など)をghq配下に移動してpush
-function newrepo() {
+# --- g: 個人gitコマンド群のディスパッチャ ---
+# g new <name> [--private] … 新規リポジトリをghq配下に作成し、GitHub作成〜pushまで一撃
+# g new [--private]        … カレントディレクトリ(moon new直後など)をghq配下に移動してpush
+# g save [メッセージ]       … git add -A → commit → push を一撃(メッセージ省略時は "wip")
+# g <その他>               … そのまま git に流す(g status, g log なども使える)
+function g() {
+  case "$1" in
+    new)  shift; _g_new "$@" ;;
+    save) shift; _g_save "$@" ;;
+    "")   git status -sb ;;
+    *)    git "$@" ;;
+  esac
+}
+
+function _g_save() {
+  git add -A || return 1
+  if git diff --cached --quiet; then
+    echo "変更なし(コミットするものがありません)"
+    return 0
+  fi
+  git commit -m "${1:-wip}" && git push
+}
+
+function _g_new() {
   local name="" visibility="--public" arg user
   for arg in "$@"; do
     case "$arg" in
