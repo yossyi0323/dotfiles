@@ -39,7 +39,7 @@ function br() {
 
 # 新規リポジトリ作成〜GitHub作成〜pushまで一撃
 # usage: newrepo <name> [--private]   … ghq配下に新規作成してpush
-#        newrepo [--private]          … カレントディレクトリ(moon new直後など)をそのままpush
+#        newrepo [--private]          … カレントディレクトリ(moon new直後など)をghq配下に移動してpush
 function newrepo() {
   local name="" visibility="--public" arg user
   for arg in "$@"; do
@@ -57,6 +57,15 @@ function newrepo() {
     [ -e README.md ] || echo "# $name" > README.md
   else
     name=$(basename "$PWD")
+    local dir="$(ghq root)/github.com/$user/$name"
+    if [ "$PWD" != "$dir" ]; then
+      if [ -e "$dir" ]; then
+        echo "移動先 $dir が既に存在します" >&2
+        return 1
+      fi
+      mkdir -p "${dir:h}" && mv "$PWD" "$dir" && cd "$dir" || return 1
+      echo "→ $dir に移動しました"
+    fi
   fi
 
   [ -d .git ] || git init -b main
