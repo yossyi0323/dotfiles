@@ -36,3 +36,34 @@ function br() {
         return "$code"
     fi
 }
+
+# 新規リポジトリ作成〜GitHub作成〜pushまで一撃
+# usage: newrepo <name> [--private]   … ghq配下に新規作成してpush
+#        newrepo [--private]          … カレントディレクトリ(moon new直後など)をそのままpush
+function newrepo() {
+  local name="" visibility="--public" arg user
+  for arg in "$@"; do
+    case "$arg" in
+      --private|--public) visibility="$arg" ;;
+      *) name="$arg" ;;
+    esac
+  done
+
+  user=$(gh api user -q .login) || { echo "gh auth login が必要です" >&2; return 1; }
+
+  if [ -n "$name" ]; then
+    local dir="$(ghq root)/github.com/$user/$name"
+    mkdir -p "$dir" && cd "$dir" || return 1
+    [ -e README.md ] || echo "# $name" > README.md
+  else
+    name=$(basename "$PWD")
+  fi
+
+  [ -d .git ] || git init -b main
+  git add -A
+  git diff --cached --quiet || git commit -m "initial commit"
+  gh repo create "$user/$name" "$visibility" --source=. --push
+}
+
+# moonbit
+export PATH="$HOME/.moon/bin:$PATH"
