@@ -4,6 +4,9 @@ alias v='pbpaste'
 export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
 export GHQ_ROOT="$HOME/src"
 
+# zsh補完システムを有効化(brew製コマンドgh/git等の補完もここで生きる)
+autoload -Uz compinit && compinit
+
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -51,6 +54,7 @@ function g() {
     *)    git "$@" ;;
   esac
 }
+compdef g=git  # g にgitの補完を継承させる(g checkout <TAB> などが効く)
 
 function _g_help() {
   cat <<'EOF'
