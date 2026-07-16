@@ -116,5 +116,19 @@ function _g_new() {
   gh repo create "$user/$name" "$visibility" --source=. --push
 }
 
+# --- awake/asleep: フタを閉じてもスリープさせない(リモート操作用) ---
+# awake  … スリープを完全に無効化(フタを閉じてもリモートから触れる)。要sudo
+# asleep … 通常のスリープ動作に戻す。要sudo
+# 注意: awake中はカバンに入れると熱がこもるので、持ち運ぶ前に asleep すること
+function awake() {
+  sudo pmset disablesleep 1 || return 1
+  echo "スリープ無効化: フタを閉じても動き続けます(戻すには asleep)"
+}
+
+function asleep() {
+  sudo pmset disablesleep 0 || return 1
+  echo "スリープ有効化: 通常の動作に戻しました"
+}
+
 # moonbit
 export PATH="$HOME/.moon/bin:$PATH"

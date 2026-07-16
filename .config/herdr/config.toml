@@ -1,2 +1,6 @@
 [ui]
 agent_panel_sort = "spaces"
+
+[theme]
+name = "tokyo-night"
+auto_switch = false
