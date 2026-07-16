@@ -38,8 +38,8 @@ function br() {
 }
 
 # --- g: 個人gitコマンド群のディスパッチャ ---
-# g new <name> [--private] … 新規リポジトリをghq配下に作成し、GitHub作成〜pushまで一撃
-# g new [--private]        … カレントディレクトリ(moon new直後など)をghq配下に移動してpush
+# g new <name> [--public] … 新規リポジトリをghq配下に作成し、GitHub作成〜pushまで一撃(デフォルトprivate)
+# g new [--public]        … カレントディレクトリ(moon new直後など)をghq配下に移動してpush
 # g save [メッセージ]       … git add -A → commit → push を一撃(メッセージ省略時は "wip")
 # g <その他>               … そのまま git に流す(g status, g log なども使える)
 function g() {
@@ -56,8 +56,9 @@ function _g_help() {
   cat <<'EOF'
 g — 個人gitコマンド集 (dotfiles/.zshrc で定義)
 
-  g new <name> [--private]   新規リポジトリをghq配下に作成 → GitHub作成 → push → その場にcd
-  g new [--private]          カレントディレクトリをghq配下に移動 → commit → GitHub作成 → push
+  g new <name> [--public]    新規リポジトリをghq配下に作成 → GitHub作成 → push → その場にcd
+  g new [--public]           カレントディレクトリをghq配下に移動 → commit → GitHub作成 → push
+                             (デフォルトはprivate。公開したいときだけ --public)
                              (moon new などツールがディレクトリを作った直後に使う)
   g save [メッセージ]         git add -A → commit → push を一撃 (メッセージ省略時は "wip")
   g help                     このヘルプを表示 (g help commit などは git help に流れる)
@@ -78,7 +79,7 @@ function _g_save() {
 }
 
 function _g_new() {
-  local name="" visibility="--public" arg user
+  local name="" visibility="--private" arg user
   for arg in "$@"; do
     case "$arg" in
       --private|--public) visibility="$arg" ;;
