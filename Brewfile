@@ -16,6 +16,8 @@ brew "ghq"
 brew "git-filter-repo"
 # Task is a task runner/build tool that aims to be simpler and easier to use
 brew "go-task"
+# Agent multiplexer that lives in your terminal
+brew "herdr"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Polyglot runtime manager (asdf rust clone)
