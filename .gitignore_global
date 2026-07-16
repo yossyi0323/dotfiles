@@ -2,4 +2,9 @@
 .env.local
 *.local
 
+# vim swap/backup files
+*.swp
+*.swo
+*~
+
 **/.claude/settings.local.json
