@@ -38,6 +38,8 @@ brew "starship"
 brew "tailscale"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Extremely fast Python package and project manager
+brew "uv"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # Fish-like fast/unobtrusive autosuggestions for zsh
