@@ -42,6 +42,8 @@ brew "zoxide"
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+# Time tracker (Intel-only build, requires Rosetta 2)
+cask "activitywatch"
 # Collection of apps and services for photography, design, video, web, and UX
 cask "adobe-creative-cloud"
 # Anthropic's official Claude AI desktop app

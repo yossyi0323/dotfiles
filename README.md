@@ -37,3 +37,9 @@ Homebrew では管理できないため、手動でインストールするこ�
 | アプリ | 入手先 |
 | --- | --- |
 | Kindle | Mac App Store |
+
+activitywatch は Intel-only ビルドのため Rosetta 2 が必要。一度入れると公式のアンインストール手段が無いため、自動化はせず手動でインストールする。
+
+```sh
+softwareupdate --install-rosetta --agree-to-license
+```

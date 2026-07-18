@@ -7,6 +7,11 @@ echo "==> Installing Homebrew packages..."
 brew update
 brew bundle --file="$DOTFILES_DIR/Brewfile"
 
+echo "==> Registering login items..."
+if ! osascript -e 'tell application "System Events" to get the name of every login item' | grep -q "ActivityWatch"; then
+  osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/ActivityWatch.app", hidden:false}'
+fi
+
 echo "==> Creating symlinks..."
 mkdir -p ~/.config/broot
 mkdir -p ~/.config/herdr
