@@ -65,6 +65,8 @@ cask "karabiner-elements"
 cask "obsidian"
 # Team communication and collaboration software
 cask "slack"
+# Mesh VPN based on WireGuard (GUI app; menu bar login/control)
+cask "tailscale-app"
 # Open-source code editor
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
