@@ -34,6 +34,8 @@ brew "rustup"
 brew "sl"
 # Cross-shell prompt for astronauts
 brew "starship"
+# Zero config VPN for building secure networks
+brew "tailscale"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
 # Shell extension to navigate your filesystem faster
