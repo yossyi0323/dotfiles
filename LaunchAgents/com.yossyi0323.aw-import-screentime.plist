@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.yossyi0323.aw-import-screentime</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/yoshitogoto/src/github.com/ActivityWatch/aw-import-screentime/.venv/bin/aw-import-screentime</string>
+		<string>watch</string>
+	</array>
+	<key>WorkingDirectory</key>
+	<string>/Users/yoshitogoto/src/github.com/ActivityWatch/aw-import-screentime</string>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<dict>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+	<key>StandardOutPath</key>
+	<string>/Users/yoshitogoto/Library/Logs/aw-import-screentime.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/yoshitogoto/Library/Logs/aw-import-screentime.err.log</string>
+	<key>ProcessType</key>
+	<string>Background</string>
+</dict>
+</plist>

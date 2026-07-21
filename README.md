@@ -43,3 +43,19 @@ activitywatch は Intel-only ビルドのため Rosetta 2 が必要。一度入�
 ```sh
 softwareupdate --install-rosetta --agree-to-license
 ```
+
+## iPhone Screen Time の ActivityWatch 連携 (aw-import-screentime)
+
+以下は `install.sh` では自動化できないため手動セットアップが必要。
+
+1. リポジトリをクローンして `uv sync`
+   ```sh
+   git clone https://github.com/ActivityWatch/aw-import-screentime.git ~/src/github.com/ActivityWatch/aw-import-screentime
+   cd ~/src/github.com/ActivityWatch/aw-import-screentime && uv sync
+   ```
+2. iOS/macOS 両方で「デバイス間で共有」(Screen Time の設定)をON にする
+3. **システム設定 → プライバシーとセキュリティ → フルディスクアクセス** で、uv が管理する python バイナリを許可する(`~/.local/share/uv/python/cpython-*/bin/python3.13` 相当。バージョンは変わりうるので `readlink -f .venv/bin/python` で確認)
+   - これをやらないと `~/Library/Biome/sync/sync.db` が読めず `unable to open database file` エラーで launchd ジョブが起動失敗する
+4. `install.sh` で `LaunchAgents/com.yossyi0323.aw-import-screentime.plist` がシンボリックリンク＆ロードされ、以後は常駐して自動同期される
+   - 手動でロードし直す場合: `launchctl load -w ~/Library/LaunchAgents/com.yossyi0323.aw-import-screentime.plist`
+   - ログ: `~/Library/Logs/aw-import-screentime.log` / `.err.log`
