@@ -1,3 +1,11 @@
+onboarding = false
+
+[keys]
+previous_agent = "alt+k"
+next_agent = "alt+j"
+previous_workspace = "alt+h"
+next_workspace = "alt+l"
+
 [ui]
 agent_panel_sort = "spaces"
 
