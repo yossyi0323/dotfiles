@@ -1,4 +1,5 @@
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
 alias c='pbcopy'
 alias v='pbpaste'
 export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
