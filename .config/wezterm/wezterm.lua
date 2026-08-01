@@ -6,10 +6,10 @@ config.automatically_reload_config = true
 config.set_environment_variables = {
   PATH = "/opt/homebrew/bin:" .. os.getenv("PATH"),
 }
-config.font_size = 14.0
+config.font_size = 16.0
 config.use_ime = true
 config.enable_kitty_keyboard = true
-config.window_background_opacity = 0.6
+config.window_background_opacity = 0.7
 config.macos_window_background_blur = 20
 config.font = wezterm.font_with_fallback({ 'Menlo', 'HackGenConsoleNF', 'Hiragino Kaku Gothic ProN', 'Monaco', 'Courier New' })
 
