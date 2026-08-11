@@ -8,10 +8,19 @@ export GHQ_ROOT="$HOME/src"
 # zsh補完システムを有効化(brew製コマンドgh/git等の補完もここで生きる)
 autoload -Uz compinit && compinit
 
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Homebrewのprefixを検出(macOS Apple Silicon: /opt/homebrew, Linux/WSL: /home/linuxbrew/.linuxbrew)
+if [[ -d /opt/homebrew ]]; then
+  HOMEBREW_PREFIX=/opt/homebrew
+elif [[ -d /home/linuxbrew/.linuxbrew ]]; then
+  HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
+fi
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+  eval "$("$HOMEBREW_PREFIX/bin/brew" shellenv)"
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 
-eval "$(/opt/homebrew/bin/mise activate zsh)"
+eval "$(mise activate zsh)"
 eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
