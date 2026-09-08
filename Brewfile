@@ -34,11 +34,11 @@ brew "rustup"
 brew "sl"
 # Cross-shell prompt for astronauts
 brew "starship"
-# Zero config VPN for building secure networks
+# Easiest, most secure way to use WireGuard and 2FA
 brew "tailscale"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
-# Extremely fast Python package and project manager
+# Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
@@ -61,8 +61,6 @@ cask "font-jetbrains-mono"
 cask "font-udev-gothic-nf"
 # Web browser
 cask "google-chrome"
-# Keyboard customiser
-cask "karabiner-elements"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Team communication and collaboration software
@@ -74,8 +72,11 @@ cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm@nightly"
 vscode "anthropic.claude-code"
+vscode "golang.go"
 vscode "mhutchie.git-graph"
 vscode "moonbit.moonbit-lang"
 go "cmd/go"
 go "cmd/gofmt"
+go "golang.org/x/tools/gopls"
+cargo "topcoat-cli"
 npm "corepack"
