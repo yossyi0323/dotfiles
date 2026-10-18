@@ -77,3 +77,38 @@ softwareupdate --install-rosetta --agree-to-license
 4. `install.sh` で `LaunchAgents/com.yossyi0323.aw-import-screentime.plist` がシンボリックリンク＆ロードされ、以後は常駐して自動同期される
    - 手動でロードし直す場合: `launchctl load -w ~/Library/LaunchAgents/com.yossyi0323.aw-import-screentime.plist`
    - ログ: `~/Library/Logs/aw-import-screentime.log` / `.err.log`
+
+## iPhone のリアルタイム在席通知 (aw-phone-heartbeat)
+
+`aw-where` は「今 Mac の前にいるか / スマホを触っているか」を判定するコマンド(`bin/aw-where`)。
+Mac 側は ActivityWatch の afk/window バケットを見るので即時だが、スマホ側は Screen Time
+インポートだけだと Apple が Screen Time DB に書き込むタイミング(数分〜十数分おき)の分だけ遅れる。
+
+そこで iOS ショートカットのオートメーションから iCloud Drive に1行のファイルを書かせ、
+`aw-where` がそれを優先して読む。遅延は iCloud 同期ぶん(数秒〜1分程度)まで縮む。
+ショートカットは iPhone 側の GUI 操作でしか作れないため手動セットアップ。
+
+書き込み先: `~/Library/Mobile Documents/com~apple~CloudDocs/aw-phone-heartbeat.txt`
+内容: `open <アプリ名>` または `closed <アプリ名>` の1行のみ(毎回上書き)
+
+### iPhone 側の手順
+
+1. ショートカット App → 「ショートカット」タブで新規作成。名前は `phone-heartbeat-open`
+   1. アクション「テキスト」を追加し、本文に `open ` と入れる(末尾にショートカット入力の
+      アプリ名変数を続けると、どのアプリを開いたか分かる)
+   2. アクション「ファイルを保存」を追加。保存先を iCloud Drive の最上位、
+      ファイル名を `aw-phone-heartbeat.txt`、**「保存先を尋ねる」をOFF**、
+      **「既存ファイルを上書き」をON** にする
+2. 同じ手順で `closed ` 版のショートカット `phone-heartbeat-closed` を作る
+3. 「オートメーション」タブ → 新規 → **App** を選択
+   - 対象アプリ: 普段使うものを複数選ぶ(YouTube, Chrome, X など)
+   - 「開かれたとき」→ `phone-heartbeat-open` を実行、**「実行前に尋ねる」をOFF**
+   - もう1つ作って「閉じられたとき」→ `phone-heartbeat-closed`、同じくOFF
+4. Mac 側で確認する
+
+   ```sh
+   aw-where            # phone 行の source が heartbeat になっていればOK
+   ```
+
+heartbeat ファイルが無い場合は自動で Screen Time にフォールバックするので、
+セットアップしなくても `aw-where` 自体は動く。

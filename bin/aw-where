@@ -1,0 +1,132 @@
+#!/bin/sh
+# aw-where - 今 Mac の前にいるか / スマホを触っているか / 離席かを判定する。
+#
+#   $ aw-where
+#   where: AT_MAC
+#   mac    : not-afk (0分前)
+#   window : WezTerm / herdr (0分前, 10/18 21:40)
+#   phone  : open YouTube (1分前, heartbeat)
+#
+# 1行目の where: が判定結果。AT_MAC / LOCKED / ON_PHONE / AWAY のいずれか。
+# Mac の前にいて同時にスマホも触っている場合は AT_MAC で、phone 行に状態が出る。
+# --json を付けると機械処理用の JSON を出す。
+#
+# スマホの情報源は2つある。
+#   1. heartbeat  - iOS ショートカットのオートメーションが iCloud Drive に書く1行のファイル。
+#                   内容は "open <アプリ名>" か "closed <アプリ名>"。遅延は iCloud 同期ぶんだけ。
+#                   セットアップ手順は dotfiles の README.md を見る。
+#   2. ScreenTime - aw-import-screentime が取り込む Screen Time のログ。
+#                   取り込み自体は60秒以内だが、Apple が Screen Time DB に書くのが
+#                   数分〜十数分まとめてなので、その分だけ必ず遅れる。現在地の判定には弱い。
+# heartbeat があればそちらを優先し、無ければ ScreenTime にフォールバックする。
+set -eu
+
+AW="${AW_HOST:-http://localhost:5600}/api/0"
+HEARTBEAT="${AW_PHONE_HEARTBEAT:-$HOME/Library/Mobile Documents/com~apple~CloudDocs/aw-phone-heartbeat.txt}"
+PRESENT_SEC="${AW_PRESENT_SEC:-180}"       # これより新しい afk イベントなら在席と見なす
+PHONE_SEC="${AW_PHONE_SEC:-600}"           # heartbeat が open でこれより新しければスマホ操作中
+SCREENTIME_SEC="${AW_SCREENTIME_SEC:-900}" # heartbeat が無い場合に ScreenTime を信じる範囲
+
+JSON=0
+case "${1:-}" in
+  --json) JSON=1 ;;
+  -h|--help) sed -n '2,24p' "$0" | cut -c3-; exit 0 ;;
+  "") ;;
+  *) echo "aw-where: 不明な引数: $1" >&2; exit 2 ;;
+esac
+
+buckets=$(curl -sf --max-time 5 "$AW/buckets/") || {
+  echo "aw-where: ActivityWatch に繋がらない ($AW)。ActivityWatch.app が起動しているか確認する" >&2
+  exit 1
+}
+
+pick() {
+  printf '%s' "$buckets" | jq -r --arg p "$1" '[keys[] | select(startswith($p))] | sort | first // empty'
+}
+
+# 最後のイベントを "終了エポック<TAB>開始エポック<TAB>ラベル" で返す
+last_event() {
+  [ -n "$1" ] || return 0
+  curl -sf --max-time 5 "$AW/buckets/$1/events?limit=1" | jq -r '
+    def ep: sub("\\.[0-9]+";"") | sub("\\+00:00$";"Z") | fromdateiso8601;
+    .[0] // empty
+    | (.timestamp | ep) as $start
+    | [$start + (.duration | floor), $start,
+       (.data.status // ((.data.app // "?") + (if (.data.title // "") == "" then "" else " / " + .data.title end)))]
+    | @tsv'
+}
+
+afk=$(last_event "$(pick aw-watcher-afk_)" || true)
+win=$(last_event "$(pick aw-watcher-window_)" || true)
+ios=$(last_event "$(pick aw-import-screentime_ios)" || true)
+
+now=$(date +%s)
+f() { printf '%s' "$1" | cut -f"$2"; }
+
+afk_end=$(f "$afk" 1); afk_label=$(f "$afk" 3)
+win_end=$(f "$win" 1); win_start=$(f "$win" 2); win_label=$(f "$win" 3)
+ios_end=$(f "$ios" 1); ios_label=$(f "$ios" 3)
+
+# --- スマホ: heartbeat を優先、無ければ ScreenTime ---
+phone_src=""; phone_label=""; phone_at=""; phone_open=0
+if [ -f "$HEARTBEAT" ]; then
+  line=$(tr -d '\r\n' < "$HEARTBEAT" | sed 's/^ *//;s/ *$//')
+  if [ -n "$line" ]; then
+    phone_src=heartbeat
+    phone_label=$line
+    phone_at=$(stat -f %m "$HEARTBEAT")
+    case "$line" in
+      open*|Open*|OPEN*) [ $((now - phone_at)) -lt "$PHONE_SEC" ] && phone_open=1 ;;
+    esac
+  fi
+fi
+if [ -z "$phone_src" ] && [ -n "$ios_end" ]; then
+  phone_src=ScreenTime
+  phone_label=$ios_label
+  phone_at=$ios_end
+  [ $((now - ios_end)) -lt "$SCREENTIME_SEC" ] && phone_open=1
+fi
+
+# --- 判定 ---
+locked=0
+case "$win_label" in loginwindow*) locked=1 ;; esac
+
+at_mac=0
+if [ "$locked" -eq 0 ] && [ -n "$afk_end" ] && [ "$afk_label" = "not-afk" ] \
+   && [ $((now - afk_end)) -lt "$PRESENT_SEC" ]; then
+  at_mac=1
+fi
+
+if   [ "$at_mac" -eq 1 ];     then where=AT_MAC
+elif [ "$phone_open" -eq 1 ]; then where=ON_PHONE
+elif [ "$locked" -eq 1 ];     then where=LOCKED
+else                               where=AWAY
+fi
+
+mins() { [ -n "$1" ] && echo $(( (now - $1) / 60 )) || echo ""; }
+afk_age=$(mins "$afk_end"); win_age=$(mins "$win_end"); phone_age=$(mins "$phone_at")
+
+if [ "$JSON" -eq 1 ]; then
+  jq -nc \
+    --arg where "$where" \
+    --arg afk "$afk_label" --arg afk_age "$afk_age" \
+    --arg window "$win_label" --arg window_age "$win_age" \
+    --arg phone "$phone_label" --arg phone_age "$phone_age" \
+    --arg phone_src "$phone_src" --argjson phone_open "$phone_open" \
+    'def n: if . == "" then null else tonumber end;
+     {where: $where,
+      at_mac: ($where == "AT_MAC"),
+      mac:    {status: $afk,    minutes_ago: ($afk_age    | n)},
+      window: {title:  $window, minutes_ago: ($window_age | n)},
+      phone:  {state: $phone, minutes_ago: ($phone_age | n),
+               source: (if $phone_src == "" then null else $phone_src end),
+               in_use: ($phone_open == 1)}}'
+  exit 0
+fi
+
+echo "where: $where"
+[ -n "$afk_label" ]   && echo "mac    : $afk_label (${afk_age}分前)"
+[ -n "$win_label" ]   && echo "window : $win_label (${win_age}分前, $(date -r "$win_start" '+%m/%d %H:%M'))"
+[ -n "$phone_label" ] && echo "phone  : $phone_label (${phone_age}分前, $phone_src)"
+[ -z "$phone_label" ] && echo "phone  : 情報なし"
+exit 0
