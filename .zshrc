@@ -35,23 +35,6 @@ function ghq-fzf() {
 zle -N ghq-fzf
 bindkey '^o' ghq-fzf
 
-#@ br [path] | brootでディレクトリを探索し、終了時に選んだ先へcd
-#@+ 素の broot は終了してもcdしないので、--outcmd 経由でcdまで反映させている。
-#@+ 起動時は --max-depth 1 (直下のみ表示)。
-function br() {
-    local cmd cmd_file code
-    cmd_file=$(mktemp)
-    if broot --outcmd "$cmd_file" --max-depth 1 "$@"; then
-        cmd=$(<"$cmd_file")
-        command rm -f "$cmd_file"
-        eval "$cmd"
-    else
-        code=$?
-        command rm -f "$cmd_file"
-        return "$code"
-    fi
-}
-
 # --- g: 個人gitコマンド群のディスパッチャ ---
 #@ g new <name> [--public] | 新規リポジトリをghq配下に作成→GitHub作成→push→その場にcd
 #@+ デフォルトは private。公開したいときだけ --public を付ける。
@@ -129,11 +112,6 @@ function asleep() {
   sudo pmset disablesleep 0 || return 1
   echo "スリープ有効化: 通常の動作に戻しました"
 }
-
-#@ c | 標準出力をクリップボードにコピー (pbcopy の別名)
-alias c='pbcopy'
-#@ v | クリップボードの内容を標準出力に貼り付け (pbpaste の別名)
-alias v='pbpaste'
 
 # --- helpme: 自作コマンドの一覧・詳細を出す ---
 # 一覧の実体は .zshrc 内の "#@" 注釈。ヘルプ本文を別に持たないので実装とズレない。
