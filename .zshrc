@@ -56,6 +56,66 @@ function g() {
 }
 compdef g=git  # g にgitの補完を継承させる(g checkout <TAB> などが効く)
 
+#@ gwt | リポジトリ本体(メインworktree)のルートにcd
+#@ gwt <branch> | そのブランチのworktreeにcd (無ければ作ってからcd)
+#@+ 置き場所は <リポジトリ>.worktrees/<ブランチ名> (ghq root 配下)。
+#@+ ghq list に載るので Ctrl+O でも直接飛べる (Ctrl+O → pwc の流れがそのまま使える)。
+#@+ ローカルに無いブランチ名を渡した場合、origin に同名があればそれを追跡し、
+#@+ 無ければ現在のHEADから新規ブランチを作る。
+function gwt() {
+  local main
+  main=$(git worktree list --porcelain 2>/dev/null | awk '/^worktree /{print substr($0, 10); exit}')
+  if [[ -z "$main" ]]; then
+    print -r -- "gwt: gitリポジトリの中で実行してください" >&2
+    return 1
+  fi
+
+  if (( $# == 0 )); then
+    cd "$main"
+    return
+  fi
+
+  local branch="$1" existing
+  # 既にそのブランチのworktree(本体含む)があるならそこへ移動するだけ
+  existing=$(git worktree list --porcelain | awk -v b="refs/heads/$branch" '
+    /^worktree /{ wt = substr($0, 10) }
+    /^branch /  { if ($2 == b) { print wt; exit } }')
+  if [[ -n "$existing" ]]; then
+    cd "$existing"
+    return
+  fi
+
+  local dir="${main}.worktrees/$branch"
+  if [[ -e "$dir" ]]; then
+    print -r -- "gwt: $dir が既にあります (worktreeとして登録されていません)" >&2
+    return 1
+  fi
+  mkdir -p "${dir:h}" || return 1
+
+  if git show-ref --verify --quiet "refs/heads/$branch"; then
+    git worktree add "$dir" "$branch" || return 1
+  elif git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+    git fetch origin "$branch" || return 1
+    git worktree add --track -b "$branch" "$dir" "origin/$branch" || return 1
+  else
+    git worktree add -b "$branch" "$dir" || return 1
+  fi
+  cd "$dir"
+}
+
+# gwt のブランチ名補完(ローカル + origin。origin/ は外して重複を除く)
+function _gwt() {
+  local -a branches
+  branches=(${(f)"$(git for-each-ref --format='%(refname:short)' refs/heads refs/remotes/origin 2>/dev/null | sed 's|^origin/||' | grep -v '^HEAD$' | sort -u)"})
+  compadd -- $branches
+}
+compdef _gwt gwt
+
+#@ pwc | カレントディレクトリの絶対パスをクリップボードにコピー (pwd | pbcopy)
+function pwc() {
+  print -rn -- "$PWD" | pbcopy && print -r -- "コピーしました: $PWD"
+}
+
 function _g_save() {
   git add -A || return 1
   if git diff --cached --quiet; then
