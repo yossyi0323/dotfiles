@@ -1,7 +1,5 @@
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
-alias c='pbcopy'
-alias v='pbpaste'
 export HOMEBREW_BUNDLE_FILE="$HOME/dotfiles/Brewfile"
 export GHQ_ROOT="$HOME/src"
 
@@ -25,6 +23,7 @@ eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
 
+#@ Ctrl+O | ghq管理下のリポジトリをfzfで選んでcd (コマンドではなくキーバインド)
 function ghq-fzf() {
   local selected_dir=$(ghq list -p | fzf --query "$LBUFFER")
   if [ -n "$selected_dir" ]; then
@@ -36,6 +35,9 @@ function ghq-fzf() {
 zle -N ghq-fzf
 bindkey '^o' ghq-fzf
 
+#@ br [path] | brootでディレクトリを探索し、終了時に選んだ先へcd
+#@+ 素の broot は終了してもcdしないので、--outcmd 経由でcdまで反映させている。
+#@+ 起動時は --max-depth 1 (直下のみ表示)。
 function br() {
     local cmd cmd_file code
     cmd_file=$(mktemp)
@@ -51,37 +53,25 @@ function br() {
 }
 
 # --- g: 個人gitコマンド群のディスパッチャ ---
-# g new <name> [--public] … 新規リポジトリをghq配下に作成し、GitHub作成〜pushまで一撃(デフォルトprivate)
-# g new [--public]        … カレントディレクトリ(moon new直後など)をghq配下に移動してpush
-# g save [メッセージ]       … git add -A → commit → push を一撃(メッセージ省略時は "wip")
-# g <その他>               … そのまま git に流す(g status, g log なども使える)
+#@ g new <name> [--public] | 新規リポジトリをghq配下に作成→GitHub作成→push→その場にcd
+#@+ デフォルトは private。公開したいときだけ --public を付ける。
+#@+ 引数なし (g new) だとカレントディレクトリをghq配下に移動してから同じ処理をする。
+#@+ moon new などツールがディレクトリを作った直後に使う用。
+#@ g save [message] | git add -A → commit → push を一撃 (メッセージ省略時は "wip")
+#@+ ステージ後に差分がなければ何もせず終了する。
+#@ g help | g のサブコマンド一覧 (helpme g と同じ。g help commit などは git help に流れる)
+#@ g | 引数なしだと git status -sb
+#@ g <git-args> | 未知のサブコマンドは素の git に流す (g log, g diff, g push ...)
 function g() {
   case "$1" in
     new)  shift; _g_new "$@" ;;
     save) shift; _g_save "$@" ;;
-    help) if [ $# -eq 1 ]; then _g_help; else git "$@"; fi ;;
+    help) if [ $# -eq 1 ]; then helpme g; else git "$@"; fi ;;
     "")   git status -sb ;;
     *)    git "$@" ;;
   esac
 }
 compdef g=git  # g にgitの補完を継承させる(g checkout <TAB> などが効く)
-
-function _g_help() {
-  cat <<'EOF'
-g — 個人gitコマンド集 (dotfiles/.zshrc で定義)
-
-  g new <name> [--public]    新規リポジトリをghq配下に作成 → GitHub作成 → push → その場にcd
-  g new [--public]           カレントディレクトリをghq配下に移動 → commit → GitHub作成 → push
-                             (デフォルトはprivate。公開したいときだけ --public)
-                             (moon new などツールがディレクトリを作った直後に使う)
-  g save [メッセージ]         git add -A → commit → push を一撃 (メッセージ省略時は "wip")
-  g help                     このヘルプを表示 (g help commit などは git help に流れる)
-  g                          git status -sb
-  g <その他>                 そのまま git に流す (g log, g diff, g push など)
-
-  git自体のヘルプ: g --help (コマンド一覧) / g help <コマンド> (マニュアル)
-EOF
-}
 
 function _g_save() {
   git add -A || return 1
@@ -127,9 +117,9 @@ function _g_new() {
 }
 
 # --- awake/asleep: フタを閉じてもスリープさせない(リモート操作用) ---
-# awake  … スリープを完全に無効化(フタを閉じてもリモートから触れる)。要sudo
-# asleep … 通常のスリープ動作に戻す。要sudo
-# 注意: awake中はカバンに入れると熱がこもるので、持ち運ぶ前に asleep すること
+#@ awake | スリープを完全に無効化 (フタを閉じてもリモートから触れる。要sudo)
+#@+ 注意: awake中にカバンに入れると熱がこもるので、持ち運ぶ前に asleep すること。
+#@ asleep | 通常のスリープ動作に戻す (要sudo)
 function awake() {
   sudo pmset disablesleep 1 || return 1
   echo "スリープ無効化: フタを閉じても動き続けます(戻すには asleep)"
@@ -138,6 +128,65 @@ function awake() {
 function asleep() {
   sudo pmset disablesleep 0 || return 1
   echo "スリープ有効化: 通常の動作に戻しました"
+}
+
+#@ c | 標準出力をクリップボードにコピー (pbcopy の別名)
+alias c='pbcopy'
+#@ v | クリップボードの内容を標準出力に貼り付け (pbpaste の別名)
+alias v='pbpaste'
+
+# --- helpme: 自作コマンドの一覧・詳細を出す ---
+# 一覧の実体は .zshrc 内の "#@" 注釈。ヘルプ本文を別に持たないので実装とズレない。
+#@ helpme [command] | 自作コマンドの一覧を表示 (引数を渡すとそのコマンドの詳細)
+#@+ 一覧は ~/dotfiles/.zshrc の "#@" 注釈から生成している。
+#@+ コマンドを追加したら、定義の真上に "#@ 使い方 | 説明" を1行足せばここに載る。
+#@+ 補足を続けたいときは "#@+ 補足" を足す (この行自体がその例)。
+function helpme() {
+  local src="$HOME/dotfiles/.zshrc"
+  if [[ ! -r "$src" ]]; then
+    print -r -- "helpme: $src が読めません" >&2
+    return 1
+  fi
+
+  if (( $# == 0 )); then
+    print -r -- "自作コマンド一覧 ($src)"
+    print -r -- ""
+    awk '
+      /^#@ / {
+        line = substr($0, 4)
+        n = index(line, " | ")
+        if (n == 0) printf "  %s\n", line
+        else        printf "  %-26s %s\n", substr(line, 1, n - 1), substr(line, n + 3)
+      }
+    ' "$src"
+    print -r -- ""
+    print -r -- "  詳細: helpme <コマンド名>  (例: helpme g new)"
+    return 0
+  fi
+
+  local query="$*" out
+  out=$(awk -v q="$query" '
+    /^#@ / {
+      line = substr($0, 4)
+      n = index(line, " | ")
+      usage = (n == 0) ? line : substr(line, 1, n - 1)
+      desc  = (n == 0) ? ""   : substr(line, n + 3)
+      hit = (usage == q || index(usage, q " ") == 1)
+      if (hit) {
+        printf "  %s\n", usage
+        if (desc != "") printf "      %s\n", desc
+      }
+      next
+    }
+    /^#@\+ / { if (hit) printf "      %s\n", substr($0, 5); next }
+    { hit = 0 }
+  ' "$src")
+
+  if [[ -z "$out" ]]; then
+    print -r -- "helpme: '$query' に該当する自作コマンドはありません (一覧は helpme)" >&2
+    return 1
+  fi
+  print -r -- "$out"
 }
 
 # moonbit
