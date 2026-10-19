@@ -62,6 +62,41 @@ activitywatch は Intel-only ビルドのため Rosetta 2 が必要。一度入�
 softwareupdate --install-rosetta --agree-to-license
 ```
 
+## Codex を Claude Code と同じ設定で動かす
+
+Claude Code と Codex を併用している。指示・メモリ・スキル・権限の考え方を Codex 側にも揃える。
+
+| Claude Code | Codex | 方法 |
+| --- | --- | --- |
+| `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` | symlink (`install.sh`) |
+| リポジトリの `CLAUDE.md` | 同じファイル | `project_doc_fallback_filenames = ["CLAUDE.md"]` |
+| `~/.claude/projects/*/memory/` | 同じディレクトリを読み書き | SessionStart フック `.codex/hooks/claude-memory.sh` |
+| `~/.claude/skills/hunk-review` | `~/.agents/skills/hunk-review` | symlink (`install.sh`) |
+| auto モード | `approvals_reviewer = "auto_review"` | `config.toml` |
+| `effortLevel: high` | `model_reasoning_effort = "high"` | `config.toml` |
+| claude.ai コネクタ | Codex プラグイン | gmail / google-calendar / google-drive / slack / linear / supabase / vercel / mermaid-diagrams |
+
+`~/.codex/config.toml` は Codex アプリがバージョン番号やパスを書き換えるため symlink にせず、以下を手で入れる:
+
+```toml
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
+sandbox_mode = "workspace-write"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+[features]
+hooks = true
+
+[sandbox_workspace_write]
+network_access = true
+```
+
+手動ステップ:
+
+1. Codex CLI で `/hooks` を開き、`claude-memory.sh` を信頼する。Codex はフックの中身のハッシュで信頼を記録するので、未承認のフックや中身を変えたフックは実行されない（＝メモリが渡らない）。スクリプトを編集したらもう一度承認が必要
+2. プラグインのうち Linear / Mermaid は Codex アプリ側で各サービスへのログインが必要
+
 ## iPhone Screen Time の ActivityWatch 連携 (aw-import-screentime)
 
 以下は `install.sh` では自動化できないため手動セットアップが必要。
