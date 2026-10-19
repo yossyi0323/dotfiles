@@ -70,7 +70,7 @@ Claude Code と Codex を併用している。指示・メモリ・スキル・�
 | --- | --- | --- |
 | `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` | symlink (`install.sh`) |
 | リポジトリの `CLAUDE.md` | 同じファイル | `project_doc_fallback_filenames = ["CLAUDE.md"]` |
-| `~/.claude/projects/*/memory/` | 同じディレクトリを読み書き | SessionStart フック `.codex/hooks/claude-memory.sh` |
+| `~/.claude/projects/*/memory/` | 同じディレクトリを読み書き | SessionStart フック `codex/hooks/claude-memory.sh` |
 | `~/.claude/skills/hunk-review` | `~/.agents/skills/hunk-review` | symlink (`install.sh`) |
 | auto モード | `approvals_reviewer = "auto_review"` | `config.toml` |
 | `effortLevel: high` | `model_reasoning_effort = "high"` | `config.toml` |
@@ -91,6 +91,8 @@ hooks = true
 [sandbox_workspace_write]
 network_access = true
 ```
+
+リポジトリ内のディレクトリ名を `.codex/` にしないこと。dotfiles 自体が Codex の信頼済みプロジェクトなので、`.codex/hooks.json` だとプロジェクト用フックとしても読まれ、ここで作業するときにメモリが二重に渡される。
 
 手動ステップ:
 

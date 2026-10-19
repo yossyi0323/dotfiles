@@ -31,8 +31,8 @@ ln -sf "$DOTFILES_DIR/bin/aw-where"                   ~/.local/bin/aw-where
 ln -sf /opt/homebrew/opt/hunk/libexec/skills/hunk-review ~/.claude/skills/hunk-review
 ln -sfn /opt/homebrew/opt/hunk/libexec/skills/hunk-review ~/.agents/skills/hunk-review
 ln -sf ~/.claude/CLAUDE.md                            ~/.codex/AGENTS.md
-ln -sf "$DOTFILES_DIR/.codex/hooks.json"              ~/.codex/hooks.json
-ln -sf "$DOTFILES_DIR/.codex/hooks/claude-memory.sh"  ~/.codex/hooks/claude-memory.sh
+ln -sf "$DOTFILES_DIR/codex/hooks.json"              ~/.codex/hooks.json
+ln -sf "$DOTFILES_DIR/codex/hooks/claude-memory.sh"  ~/.codex/hooks/claude-memory.sh
 ln -sf "$DOTFILES_DIR/LaunchAgents/com.yossyi0323.aw-import-screentime.plist" ~/Library/LaunchAgents/com.yossyi0323.aw-import-screentime.plist
 
 echo "==> Loading LaunchAgents..."
