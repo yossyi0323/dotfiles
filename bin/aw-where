@@ -24,7 +24,7 @@ set -eu
 AW="${AW_HOST:-http://localhost:5600}/api/0"
 HEARTBEAT="${AW_PHONE_HEARTBEAT:-$HOME/Library/Mobile Documents/com~apple~CloudDocs/aw-phone-heartbeat.txt}"
 PRESENT_SEC="${AW_PRESENT_SEC:-180}"       # これより新しい afk イベントなら在席と見なす
-PHONE_SEC="${AW_PHONE_SEC:-600}"           # heartbeat が open でこれより新しければスマホ操作中
+PHONE_SEC="${AW_PHONE_SEC:-10800}"         # heartbeat が open のまま(closed が来ていない)ならこの範囲はスマホ操作中。動画を長時間見る場合に備えて3時間。閉じた通知を取りこぼしたときの上限も兼ねる
 SCREENTIME_SEC="${AW_SCREENTIME_SEC:-900}" # heartbeat が無い場合に ScreenTime を信じる範囲
 
 JSON=0
