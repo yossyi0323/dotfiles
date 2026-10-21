@@ -40,6 +40,23 @@ helpme g new    # 個別の詳細
 
 使い方の部分は桁揃えのため ASCII で書く(日本語は説明側に書く)。
 
+## Obsidian vault の作業メモ置き場 (vault-mirror-repos)
+
+リポジトリごとの作業メモを `obsidian-vault/src/<host>/<owner>/<repo>/` に置くための
+ディレクトリを、ghq管理下のリポジトリと同じ階層で作るスクリプト (`bin/vault-mirror-repos`)。
+
+`.zshrc` の `ghq` ラッパーが `ghq get` / `ghq create` の成功後に、`g new` が GitHub 作成後に
+自動で呼ぶので、普段は手で叩く必要はない。手動で同期したいときや、gitを触らずに
+ディレクトリだけ作りたいときは以下。
+
+```sh
+vault-mirror-repos              # 足りないぶんを作って commit & push
+vault-mirror-repos --no-commit  # 作るだけ
+```
+
+作成のみで削除はしない (ghq側から消えたリポジトリのメモを残すため)。vault の場所は
+`VAULT_DIR` で上書きできる。
+
 ## Brewfile の更新
 
 インストール済みパッケージを Brewfile に反映する。

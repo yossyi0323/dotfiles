@@ -1,0 +1,54 @@
+#!/bin/bash
+# ghq管理下のリポジトリと同じ host/owner/repo 階層を、Obsidian vault の src/ 配下に作る。
+# 各リポジトリでの作業中に書いた md を、そのリポジトリのフォルダに置くための場所。
+#
+#   vault-mirror-repos              # 足りないディレクトリを作って commit & push
+#   vault-mirror-repos --no-commit  # 作るだけ(gitは触らない)
+#
+# 作成のみで削除はしない。ghq側から消えたリポジトリのメモは残す。
+set -euo pipefail
+
+VAULT="${VAULT_DIR:-$HOME/src/github.com/yossyi0323/obsidian-vault}"
+VAULT_SRC="$VAULT/src"
+
+commit=1
+case "${1:-}" in
+  --no-commit) commit=0 ;;
+  "") ;;
+  *) echo "usage: vault-mirror-repos [--no-commit]" >&2; exit 2 ;;
+esac
+
+if [ ! -d "$VAULT_SRC" ]; then
+  echo "vault-mirror-repos: $VAULT_SRC が見つかりません" >&2
+  exit 1
+fi
+
+created=()
+while IFS= read -r repo; do
+  [ -n "$repo" ] || continue
+  if [ ! -d "$VAULT_SRC/$repo" ]; then
+    mkdir -p "$VAULT_SRC/$repo"
+    created+=("$repo")
+  fi
+  # 空ディレクトリをgitに残すため。Obsidianのファイルエクスプローラには出ない。
+  [ -e "$VAULT_SRC/$repo/.gitkeep" ] || : > "$VAULT_SRC/$repo/.gitkeep"
+done < <(ghq list)
+
+if [ ${#created[@]} -eq 0 ]; then
+  exit 0
+fi
+
+for repo in "${created[@]}"; do
+  echo "vault: src/$repo"
+done
+
+if [ "$commit" -eq 0 ]; then
+  exit 0
+fi
+
+# src/ 配下だけをstageする。vaultの他の編集中ファイルは巻き込まない。
+git -C "$VAULT" add src
+if ! git -C "$VAULT" diff --cached --quiet -- src; then
+  git -C "$VAULT" commit -q -m "src: $(printf '%s, ' "${created[@]}" | sed 's/, $//') のメモ置き場を追加"
+  git -C "$VAULT" push -q || echo "vault-mirror-repos: push に失敗したのでcommitだけ残しました" >&2
+fi
