@@ -32,6 +32,8 @@ ln -sf "$DOTFILES_DIR/bin/aw-where"                   ~/.local/bin/aw-where
 ln -sf "$DOTFILES_DIR/bin/vault-mirror-repos"         ~/.local/bin/vault-mirror-repos
 ln -sf /opt/homebrew/opt/hunk/libexec/skills/hunk-review ~/.claude/skills/hunk-review
 ln -sfn /opt/homebrew/opt/hunk/libexec/skills/hunk-review ~/.agents/skills/hunk-review
+ln -sfn "$DOTFILES_DIR/shared/skills/sowhat"         ~/.claude/skills/sowhat
+ln -sfn "$DOTFILES_DIR/shared/skills/sowhat"         ~/.agents/skills/sowhat
 ln -sf "$DOTFILES_DIR/shared/instructions.md"        ~/.claude/CLAUDE.md
 ln -sf "$DOTFILES_DIR/shared/instructions.md"        ~/.codex/AGENTS.md
 ln -sf "$DOTFILES_DIR/codex/hooks.json"              ~/.codex/hooks.json

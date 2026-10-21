@@ -87,13 +87,18 @@ Claude Code と Codex で内容がずれないようにするため、コピー�
 ```
 shared/
 ├── instructions.md          # 全セッションに読み込まれるグローバル指示
-│                            #   → ~/.claude/CLAUDE.md, ~/.codex/AGENTS.md (install.sh)
-└── refs/                    # 長くて instructions.md に直接書くと重い資料
-    └── communication.md     #   ユーザーに何かを伝えるときの型 (未参照)
+│                            #   → ~/.claude/CLAUDE.md, ~/.codex/AGENTS.md
+├── refs/                    # 長いので指示本体に直接書かない資料
+│   └── communication.md     #   ユーザーに何かを伝えるときの型
+└── skills/
+    └── sowhat/              # 伝え方を立て直すスキル。refs/communication.md を読む
+                             #   → ~/.claude/skills/sowhat, ~/.agents/skills/sowhat
 ```
 
-`refs/` のファイルは、`instructions.md` から絶対パスで「作業前に読む」と指示して初めて効く。
-`@` による import は Claude Code だけの機能で Codex には伝わらないので使わない。
+symlinkはすべて`install.sh`が張る。Codexのスキル置き場は`~/.codex/skills`ではなく`~/.agents/skills`。
+
+`refs/`のファイルは自動では読まれない。読ませるには、`instructions.md`かスキルから絶対パスで
+「読む」と指示する。`@`によるimportはClaude Codeだけの機能で、Codexには伝わらないので使わない。
 
 `instructions.md` に書くのは、作業ディレクトリに関係なく効く規則だけ。特定のリポジトリでしか
 意味がない規則はそのリポジトリの `CLAUDE.md` に、セッションを越えて覚えておきたい事実は
