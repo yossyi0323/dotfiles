@@ -100,12 +100,36 @@ symlinkはすべて`install.sh`が張る。Codexのスキル置き場は`~/.code
 `refs/`のファイルは自動では読まれない。読ませるには、`instructions.md`かスキルから絶対パスで
 「読む」と指示する。`@`によるimportはClaude Codeだけの機能で、Codexには伝わらないので使わない。
 
-`instructions.md` に書くのは、作業ディレクトリに関係なく効く規則だけ。特定のリポジトリでしか
-意味がない規則はそのリポジトリの `CLAUDE.md` に、セッションを越えて覚えておきたい事実は
-`~/.claude/projects/*/memory/` に置く。
+`instructions.md`に書くのは、作業ディレクトリに関係なく当てはまる規則だけ。特定のリポジトリでしか
+意味がない規則はそのリポジトリの`CLAUDE.md`に、セッションを越えて覚えておきたい事実は
+`~/.claude/projects/*/memory/`に置く。
 
-ghq 配下のどのリポジトリが何であるかの対応表も `instructions.md` に入っている。
+ghq配下のどのリポジトリが何であるかの対応表も`instructions.md`に入っている。
 リポジトリを増やしたらそこに1行足す。
+
+### sowhatの点検項目を毎ターン入れるフック
+
+`claude/hooks/sowhat-nudge.py`が、`shared/skills/sowhat/SKILL.md`の「## 点検項目」の節を読んで
+`additionalContext`として返す。`/sowhat`を打たなくても点検項目が文脈に入る。写しは持たないので、
+SKILL.mdの項目を直せばフックの出力も変わる。
+
+`~/.claude/settings.json`はClaude Code自身が書き換える（テーマやモデルの変更）ため
+symlinkにせず、以下を手で入れる。
+
+```json
+"hooks": {
+  "UserPromptSubmit": [
+    {
+      "hooks": [
+        { "type": "command", "command": "/Users/yoshitogoto/dotfiles/claude/hooks/sowhat-nudge.py", "timeout": 10 }
+      ]
+    }
+  ]
+}
+```
+
+Codex側には入れていない。`codex/hooks.json`が使えるイベントはSessionStartで、毎ターンの差し込みに
+相当するものを確かめていない。
 
 ## Codex を Claude Code と同じ設定で動かす
 
