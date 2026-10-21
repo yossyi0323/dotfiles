@@ -218,3 +218,19 @@ Mac 側は ActivityWatch の afk/window バケットを見るので即時だが�
 
 heartbeat ファイルが無い場合は自動で Screen Time にフォールバックするので、
 セットアップしなくても `aw-where` 自体は動く。
+
+## my-assistant
+
+Go製の秘書サーバーのMac予備環境。実装とセットアップ手順は
+`~/src/github.com/yossyi0323/my-assistant/README.md`。
+
+1. リポジトリをビルドし、承認済みの`.runtime-mac`を初期化する。
+2. `assistant set-vault`で既存のObsidian Sync済みvaultを設定する。ノートは書き換えない。
+3. `install.sh`で`com.yossyi0323.my-assistant`と`com.yossyi0323.my-assistant-notes`を登録する。
+   前者はMac単独のサーバー、後者は5分ごとのGit取得・実ノートとの差分確認・ミニPCへの読み取り用コピー転送。
+4. ミニPCへは既存のSSH認証を使う。接続不可でもMacサーバーは止まらず、ミニPCも最後のコピーを保持する。
+   転送には現状Tailscaleを使うが、通常の会話・カレンダー取得・保存済みノート参照の必須条件にはしない。
+5. Macを主にするときはmy-assistantの引き継ぎ手順で切り替える。接続切れだけでは自動切り替えず、二重通知を防ぐ。
+
+ログ・ノートのコピー・設定・認証情報はリポジトリ内の無視対象`.runtime-mac`に置く。dotfilesには含めない。
+Macのログイン中に動作し、スリープ中は更新されない。取得時刻を保持し、古い情報を現在の観測として扱わない。

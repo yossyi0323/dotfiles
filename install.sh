@@ -45,3 +45,12 @@ echo "  NOTE: aw-import-screentime requires manual setup first - see README.md"
 launchctl load -w ~/Library/LaunchAgents/com.yossyi0323.aw-import-screentime.plist 2>/dev/null || true
 
 echo "Done! Restart your shell to apply changes."
+
+# Optional personal assistant: configure and build the repository before loading.
+ASSISTANT_REPO="$HOME/src/github.com/yossyi0323/my-assistant"
+if [ -x "$ASSISTANT_REPO/bin/assistant" ] && [ -f "$ASSISTANT_REPO/.runtime-mac/config.json" ]; then
+  for service in com.yossyi0323.my-assistant com.yossyi0323.my-assistant-notes; do
+    ln -sf "$DOTFILES_DIR/LaunchAgents/$service.plist" "$HOME/Library/LaunchAgents/$service.plist"
+    launchctl load -w "$HOME/Library/LaunchAgents/$service.plist" 2>/dev/null || true
+  done
+fi
