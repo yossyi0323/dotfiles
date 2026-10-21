@@ -79,13 +79,36 @@ activitywatch は Intel-only ビルドのため Rosetta 2 が必要。一度入�
 softwareupdate --install-rosetta --agree-to-license
 ```
 
+## shared/ — AIエージェントに共通で渡すもの
+
+ツールを問わず渡したい指示・参考資料は `shared/` に実体を置き、各ツールが読む場所へ symlink する。
+Claude Code と Codex で内容がずれないようにするため、コピーを作らない。
+
+```
+shared/
+├── instructions.md          # 全セッションに読み込まれるグローバル指示
+│                            #   → ~/.claude/CLAUDE.md, ~/.codex/AGENTS.md (install.sh)
+└── refs/                    # 長くて instructions.md に直接書くと重い資料
+    └── communication.md     #   ユーザーに何かを伝えるときの型 (未参照)
+```
+
+`refs/` のファイルは、`instructions.md` から絶対パスで「作業前に読む」と指示して初めて効く。
+`@` による import は Claude Code だけの機能で Codex には伝わらないので使わない。
+
+`instructions.md` に書くのは、作業ディレクトリに関係なく効く規則だけ。特定のリポジトリでしか
+意味がない規則はそのリポジトリの `CLAUDE.md` に、セッションを越えて覚えておきたい事実は
+`~/.claude/projects/*/memory/` に置く。
+
+ghq 配下のどのリポジトリが何であるかの対応表も `instructions.md` に入っている。
+リポジトリを増やしたらそこに1行足す。
+
 ## Codex を Claude Code と同じ設定で動かす
 
 Claude Code と Codex を併用している。指示・メモリ・スキル・権限の考え方を Codex 側にも揃える。
 
 | Claude Code | Codex | 方法 |
 | --- | --- | --- |
-| `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` | symlink (`install.sh`) |
+| `~/.claude/CLAUDE.md` | `~/.codex/AGENTS.md` | どちらも `shared/instructions.md` への symlink (`install.sh`) |
 | リポジトリの `CLAUDE.md` | 同じファイル | `project_doc_fallback_filenames = ["CLAUDE.md"]` |
 | `~/.claude/projects/*/memory/` | 同じディレクトリを読み書き | SessionStart フック `codex/hooks/claude-memory.sh` |
 | `~/.claude/skills/hunk-review` | `~/.agents/skills/hunk-review` | symlink (`install.sh`) |
