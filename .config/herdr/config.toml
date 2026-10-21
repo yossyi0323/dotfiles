@@ -1,6 +1,7 @@
 onboarding = false
 
 [keys]
+prefix = "ctrl+space"
 previous_agent = "alt+k"
 next_agent = "alt+j"
 previous_workspace = "alt+h"

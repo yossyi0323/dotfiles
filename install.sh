@@ -24,6 +24,7 @@ ln -sf "$DOTFILES_DIR/.zshrc"                        ~/.zshrc
 ln -sf "$DOTFILES_DIR/.gitconfig"                    ~/.gitconfig
 ln -sf "$DOTFILES_DIR/.gitignore_global"             ~/.gitignore_global
 ln -sf "$DOTFILES_DIR/.config/wezterm"               ~/.config/wezterm
+ln -sf "$DOTFILES_DIR/.config/nvim"                ~/.config/nvim
 ln -sf "$DOTFILES_DIR/.config/mise"                  ~/.config/mise
 ln -sf "$DOTFILES_DIR/.config/starship.toml"         ~/.config/starship.toml
 ln -sf "$DOTFILES_DIR/.config/herdr/config.toml"     ~/.config/herdr/config.toml
