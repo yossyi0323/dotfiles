@@ -19,6 +19,22 @@ require("nvim-tree").setup({
   update_focused_file = { enable = true },
 })
 
+-- 起動時に常にツリーを開く。ファイル指定時はカーソルをファイル側に残す
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function(data)
+    local api = require("nvim-tree.api")
+    if vim.fn.isdirectory(data.file) == 1 then
+      vim.cmd.cd(data.file)
+      api.tree.open()
+    elseif data.file == "" then
+      api.tree.open()
+    else
+      api.tree.open({ find_file = true })
+      vim.cmd.wincmd("p")
+    end
+  end,
+})
+
 vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "ファイルツリーの表示切替" })
 vim.keymap.set("n", "<leader>f", "<cmd>NvimTreeFindFile<CR>", { desc = "ツリーで現在のファイルを表示" })
 
