@@ -7,4 +7,18 @@ return {
       styles = { sidebars = "transparent", floats = "transparent" },
     },
   },
+
+  -- スタート画面の LazyVim のアスキーアートを出さない。
+  -- header = "" だと空行と余白が残るので、header のセクションごと外す。
+  {
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        sections = {
+          { section = "keys", gap = 1, padding = 1 },
+          { section = "startup" },
+        },
+      },
+    },
+  },
 }
