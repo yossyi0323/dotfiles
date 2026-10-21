@@ -23,6 +23,16 @@ eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 eval "$(starship init zsh)"
 
+#@ ghq | 素のghqのラッパー。get/create のあとに vault-mirror-repos を呼ぶ
+#@+ Obsidian vault の src/ 配下に、ghqと同じ host/owner/repo のメモ置き場を自動で作る。
+#@+ 他のサブコマンド (list, root, ...) は素のghqにそのまま流す。
+function ghq() {
+  command ghq "$@" || return $?
+  case "$1" in
+    get|create) vault-mirror-repos ;;
+  esac
+}
+
 #@ Ctrl+O | ghq管理下のリポジトリをfzfで選んでcd (コマンドではなくキーバインド)
 function ghq-fzf() {
   local selected_dir=$(ghq list -p | fzf --query "$LBUFFER")
@@ -157,6 +167,7 @@ function _g_new() {
   git add -A
   git diff --cached --quiet || git commit -m "initial commit"
   gh repo create "$user/$name" "$visibility" --source=. --push
+  vault-mirror-repos  # vault側にこのリポジトリのメモ置き場を作る
 }
 
 # --- awake/asleep: フタを閉じてもスリープさせない(リモート操作用) ---

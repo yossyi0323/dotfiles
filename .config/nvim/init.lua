@@ -17,6 +17,14 @@ require("nvim-tree").setup({
   view = { width = 32 },
   filters = { dotfiles = false },
   update_focused_file = { enable = true },
+  on_attach = function(bufnr)
+    local api = require("nvim-tree.api")
+    api.config.mappings.default_on_attach(bufnr)
+    local opts = { buffer = bufnr, noremap = true, silent = true, nowait = true }
+    -- l: ディレクトリを開く / ファイルを開く、h: 親ディレクトリを閉じる
+    vim.keymap.set("n", "l", api.node.open.edit, opts)
+    vim.keymap.set("n", "h", api.node.navigate.parent_close, opts)
+  end,
 })
 
 -- 起動時に常にツリーを開く。ファイル指定時はカーソルをファイル側に残す

@@ -29,6 +29,7 @@ ln -sf "$DOTFILES_DIR/.config/mise"                  ~/.config/mise
 ln -sf "$DOTFILES_DIR/.config/starship.toml"         ~/.config/starship.toml
 ln -sf "$DOTFILES_DIR/.config/herdr/config.toml"     ~/.config/herdr/config.toml
 ln -sf "$DOTFILES_DIR/bin/aw-where"                   ~/.local/bin/aw-where
+ln -sf "$DOTFILES_DIR/bin/vault-mirror-repos"         ~/.local/bin/vault-mirror-repos
 ln -sf /opt/homebrew/opt/hunk/libexec/skills/hunk-review ~/.claude/skills/hunk-review
 ln -sfn /opt/homebrew/opt/hunk/libexec/skills/hunk-review ~/.agents/skills/hunk-review
 ln -sf ~/.claude/CLAUDE.md                            ~/.codex/AGENTS.md
