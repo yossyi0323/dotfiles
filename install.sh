@@ -49,7 +49,7 @@ echo "Done! Restart your shell to apply changes."
 # Optional personal assistant: configure and build the repository before loading.
 ASSISTANT_REPO="$HOME/src/github.com/yossyi0323/my-assistant"
 if [ -x "$ASSISTANT_REPO/bin/assistant" ] && [ -f "$ASSISTANT_REPO/.runtime-mac/config.json" ]; then
-  for service in com.yossyi0323.my-assistant com.yossyi0323.my-assistant-notes; do
+  for service in com.yossyi0323.my-assistant com.yossyi0323.my-assistant-notes com.yossyi0323.my-assistant-note-writes; do
     ln -sf "$DOTFILES_DIR/LaunchAgents/$service.plist" "$HOME/Library/LaunchAgents/$service.plist"
     launchctl load -w "$HOME/Library/LaunchAgents/$service.plist" 2>/dev/null || true
   done
