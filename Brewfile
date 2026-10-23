@@ -79,3 +79,9 @@ go "cmd/gofmt"
 go "golang.org/x/tools/gopls"
 cargo "topcoat-cli"
 npm "corepack"
+
+brew "postgresql@18"
+
+brew "pgvector"
+
+brew "pgroonga"

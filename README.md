@@ -234,3 +234,16 @@ Go製の秘書サーバーのMac予備環境。実装とセットアップ手順
 
 ログ・ノートのコピー・設定・認証情報はリポジトリ内の無視対象`.runtime-mac`に置く。dotfilesには含めない。
 Macのログイン中に動作し、スリープ中は更新されない。取得時刻を保持し、古い情報を現在の観測として扱わない。
+
+### 記憶DBの試作（PostgreSQL）
+
+my-assistantの独立した評価用DB。PostgreSQL 18、pgvector、PGroongaをBrewfileに登録。
+ltreeとbtree_gistはPostgreSQL同梱。個人データとDBパスワードはdotfilesに置かない。
+
+1. `brew update` の後に `brew bundle` でパッケージを導入する。
+2. ネイティブ版を使うMacでは `brew services start postgresql@18` でログイン時の起動を登録する。
+3. DB作成・データ取り込み・閲覧画面の起動は、my-assistantの `experiments/memory-db/README.md` に従う。
+4. 止める場合は `brew services stop postgresql@18`。DBの実データは残る。
+
+Windowsへ移す場合は同ディレクトリのDocker Composeとpg_dump/pg_restoreを使う。
+HomebrewのデータディレクトリをWindowsへ直接コピーしない。
