@@ -74,6 +74,8 @@ If the user says "I told you this before" about something not in the current pro
 
 ## 別セッションの起動（Remote Control 付き）
 
+新しいセッションを作るときは、頼まれ方にかかわらず必ずRemote Control付きで起動する（本人の恒久の指示、2026-10-24）。
+
 エージェントセッションの中からでも新しいセッションは起動できる。TTY がないので
 `claude --remote-control` 単体はハングするが、`--bg` と併用すればデタッチして即戻る。
 
